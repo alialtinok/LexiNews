@@ -25,7 +25,7 @@ struct ArticleDetailView: View {
                     TappableTextView(text: version.body, savedWords: vocabularyStore.savedWords) {
                         tappedWord = $0
                     }
-                    .frame(maxWidth: .infinity, minHeight: 300)
+                    .frame(maxWidth: .infinity)
                     if !version.keyVocabulary.isEmpty {
                         keyVocabularySection(version.keyVocabulary)
                     }

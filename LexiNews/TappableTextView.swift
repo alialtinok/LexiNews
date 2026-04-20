@@ -24,6 +24,12 @@ struct TappableTextView: UIViewRepresentable {
     func updateUIView(_ tv: UITextView, context: Context) {
         context.coordinator.onWordTapped = onWordTapped
         tv.attributedText = buildAttributedString()
+        tv.invalidateIntrinsicContentSize()
+    }
+
+    func sizeThatFits(_ proposal: ProposedViewSize, uiView: UITextView, context: Context) -> CGSize? {
+        let width = proposal.width ?? UIScreen.main.bounds.width - 32
+        return uiView.sizeThatFits(CGSize(width: width, height: .greatestFiniteMagnitude))
     }
 
     private func buildAttributedString() -> NSAttributedString {
