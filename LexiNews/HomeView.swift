@@ -3,6 +3,7 @@ import SwiftUI
 struct HomeView: View {
     @EnvironmentObject private var store:    ArticleStore
     @EnvironmentObject private var settings: UserSettingsStore
+    @Environment(\.str) private var str
     @State private var selectedCategory: String? = nil
 
     private var displayedArticles: [Article] {
@@ -13,10 +14,10 @@ struct HomeView: View {
         NavigationStack {
             Group {
                 if store.isLoading && store.articles.isEmpty {
-                    ProgressView("Haberler yükleniyor…")
+                    ProgressView(str.loadingNews)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else if let error = store.errorMessage, store.articles.isEmpty {
-                    ErrorView(message: error) { Task { await store.reload() } }
+                    ErrorView(message: error, retryLabel: str.retryButton) { Task { await store.reload() } }
                 } else {
                     articleList
                 }
@@ -52,7 +53,7 @@ struct HomeView: View {
     private var categoryChips: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
-                chip(title: "Tümü", isSelected: selectedCategory == nil) { selectedCategory = nil }
+                chip(title: str.filterAll, isSelected: selectedCategory == nil) { selectedCategory = nil }
                 ForEach(store.categories, id: \.self) { cat in
                     chip(title: cat.capitalized, isSelected: selectedCategory == cat) { selectedCategory = cat }
                 }
@@ -74,7 +75,7 @@ struct HomeView: View {
 
     private var levelPicker: some ToolbarContent {
         ToolbarItem(placement: .topBarTrailing) {
-            Picker("Seviye", selection: $settings.selectedLevel) {
+            Picker(str.levelLabel, selection: $settings.selectedLevel) {
                 ForEach(CEFRLevel.allCases, id: \.self) { Text($0.label).tag($0) }
             }
             .pickerStyle(.menu)
@@ -84,12 +85,13 @@ struct HomeView: View {
 
 private struct ErrorView: View {
     let message: String
+    let retryLabel: String
     let retry: () -> Void
     var body: some View {
         VStack(spacing: 16) {
             Image(systemName: "wifi.slash").font(.system(size: 48)).foregroundStyle(.secondary)
             Text(message).multilineTextAlignment(.center).foregroundStyle(.secondary)
-            Button("Tekrar Dene", action: retry).buttonStyle(.borderedProminent)
+            Button(retryLabel, action: retry).buttonStyle(.borderedProminent)
         }
         .padding().frame(maxWidth: .infinity, maxHeight: .infinity)
     }

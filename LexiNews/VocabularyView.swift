@@ -3,6 +3,7 @@ import SwiftUI
 struct VocabularyView: View {
     @EnvironmentObject private var store:    VocabularyStore
     @EnvironmentObject private var settings: UserSettingsStore
+    @Environment(\.str) private var str
     @State private var tappedWord: String? = nil
 
     var body: some View {
@@ -10,9 +11,9 @@ struct VocabularyView: View {
             Group {
                 if store.savedWords.isEmpty {
                     ContentUnavailableView(
-                        "Henüz kelime yok",
+                        str.vocabEmpty,
                         systemImage: "books.vertical",
-                        description: Text("Haber okurken kelimelere tıkla, buraya kaydet.")
+                        description: Text(str.vocabEmptyDesc)
                     )
                 } else {
                     List {
@@ -26,7 +27,7 @@ struct VocabularyView: View {
                     }
                 }
             }
-            .navigationTitle("Kelimelerim")
+            .navigationTitle(str.tabMyWords)
         }
         .sheet(item: $tappedWord) { word in
             WordPopupSheet(word: word)

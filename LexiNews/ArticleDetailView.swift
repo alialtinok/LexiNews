@@ -7,6 +7,7 @@ struct ArticleDetailView: View {
     @EnvironmentObject private var vocabularyStore: VocabularyStore
     @EnvironmentObject private var readingStore:    ReadingStore
     @EnvironmentObject private var speechService:   SpeechService
+    @Environment(\.str) private var str
     @State private var localLevel: CEFRLevel? = nil
     @State private var tappedWord: String?    = nil
 
@@ -29,11 +30,11 @@ struct ArticleDetailView: View {
                         keyVocabularySection(version.keyVocabulary)
                     }
                 } else {
-                    Text("Bu seviyede içerik bulunamadı.").foregroundStyle(.secondary)
+                    Text(str.noContent).foregroundStyle(.secondary)
                 }
                 if let url = URL(string: article.originalURL) {
                     Link(destination: url) {
-                        Label("Orijinal haberi oku", systemImage: "arrow.up.right.square").font(.footnote)
+                        Label(str.readOriginal, systemImage: "arrow.up.right.square").font(.footnote)
                     }
                     .padding(.top, 8)
                 }
@@ -105,7 +106,7 @@ struct ArticleDetailView: View {
 
     private func keyVocabularySection(_ words: [String]) -> some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Anahtar Kelimeler").font(.headline)
+            Text(str.keyVocabulary).font(.headline)
             FlowLayout(spacing: 8) {
                 ForEach(words, id: \.self) { word in
                     Button { tappedWord = word } label: {

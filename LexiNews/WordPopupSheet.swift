@@ -4,6 +4,7 @@ struct WordPopupSheet: View {
     let word: String
     @EnvironmentObject private var vocabularyStore: VocabularyStore
     @EnvironmentObject private var settings:        UserSettingsStore
+    @Environment(\.str)     private var str
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -11,14 +12,16 @@ struct WordPopupSheet: View {
             VStack(spacing: 24) {
                 Text(word).font(.system(size: 36, weight: .bold)).padding(.top, 8)
                 Divider()
-                TranslationView(word: word, targetLanguageCode: settings.nativeLanguage.translationCode)
+                TranslationView(word: word,
+                                targetLanguageCode: settings.nativeLanguage.translationCode,
+                                missingLabel: str.translationMissing)
                 Spacer()
                 Button {
                     if vocabularyStore.isSaved(word) { vocabularyStore.remove(word) }
                     else { vocabularyStore.save(word) }
                 } label: {
                     Label(
-                        vocabularyStore.isSaved(word) ? "Kaydedilenlerden Çıkar" : "Kelimeyi Kaydet",
+                        vocabularyStore.isSaved(word) ? str.removeWord : str.saveWord,
                         systemImage: vocabularyStore.isSaved(word) ? "bookmark.slash" : "bookmark"
                     )
                     .frame(maxWidth: .infinity)
@@ -28,9 +31,9 @@ struct WordPopupSheet: View {
                 .padding(.horizontal).padding(.bottom, 8)
             }
             .padding()
-            .navigationTitle("Kelime")
+            .navigationTitle(str.wordTitle)
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar { ToolbarItem(placement: .topBarTrailing) { Button("Kapat") { dismiss() } } }
+            .toolbar { ToolbarItem(placement: .topBarTrailing) { Button(str.closeButton) { dismiss() } } }
         }
         .presentationDetents([.medium])
         .presentationDragIndicator(.visible)
@@ -39,7 +42,8 @@ struct WordPopupSheet: View {
 
 private struct TranslationView: View {
     let word: String
-    let targetLanguageCode: String          // e.g. "tr", "de", "ar"
+    let targetLanguageCode: String
+    let missingLabel: String
     @State private var translation: String? = nil
     @State private var isLoading = true
 
@@ -52,7 +56,7 @@ private struct TranslationView: View {
                     .font(.title2.weight(.medium))
                     .multilineTextAlignment(.center)
             } else {
-                Text("Translation not found")
+                Text(missingLabel)
                     .foregroundStyle(.secondary)
             }
         }

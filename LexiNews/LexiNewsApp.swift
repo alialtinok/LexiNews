@@ -36,6 +36,7 @@ private struct RootView: View {
                 OnboardingView()
             }
         }
+        .environment(\.str, AppStrings.from(settings.nativeLanguage))
         .animation(.easeInOut(duration: 0.4), value: settings.hasCompletedOnboarding)
     }
 }

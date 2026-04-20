@@ -5,35 +5,36 @@ struct ProfileView: View {
     @EnvironmentObject private var settings:        UserSettingsStore
     @EnvironmentObject private var vocabularyStore: VocabularyStore
     @EnvironmentObject private var readingStore:    ReadingStore
+    @Environment(\.str) private var str
 
     var body: some View {
         NavigationStack {
             List {
                 streakSection
-                Section("Seviye") {
-                    Picker("Varsayılan Seviye", selection: $settings.selectedLevel) {
+                Section(str.sectionLevel) {
+                    Picker(str.defaultLevel, selection: $settings.selectedLevel) {
                         ForEach(CEFRLevel.allCases, id: \.self) { Text($0.label).tag($0) }
                     }
                 }
-                Section("Dil") {
-                    Picker("Ana Dil", selection: $settings.nativeLanguage) {
+                Section(str.sectionLanguage) {
+                    Picker(str.nativeLanguage, selection: $settings.nativeLanguage) {
                         ForEach(NativeLanguage.all) { lang in
                             Text("\(lang.flag) \(lang.name)").tag(lang)
                         }
                     }
                 }
-                Section("İstatistikler") {
-                    LabeledContent("Kayıtlı Kelime",    value: "\(vocabularyStore.savedWords.count)")
-                    LabeledContent("Okunan Haber",       value: "\(readingStore.totalArticlesRead)")
-                    LabeledContent("Bugün Okunan",       value: "\(readingStore.todayCount)")
-                    LabeledContent("Toplam Haber",       value: "\(articleStore.articles.count)")
+                Section(str.sectionStats) {
+                    LabeledContent(str.statSavedWords,   value: "\(vocabularyStore.savedWords.count)")
+                    LabeledContent(str.statReadArticles, value: "\(readingStore.totalArticlesRead)")
+                    LabeledContent(str.statTodayRead,    value: "\(readingStore.todayCount)")
+                    LabeledContent(str.statTotalNews,    value: "\(articleStore.articles.count)")
                 }
                 Section {
-                    Link("Gizlilik Politikası", destination: URL(string: "https://example.com/privacy")!)
-                    Link("Destek", destination: URL(string: "mailto:lexinewsapp@gmail.com")!)
+                    Link(str.privacyPolicy, destination: URL(string: "https://example.com/privacy")!)
+                    Link(str.support,       destination: URL(string: "mailto:lexinewsapp@gmail.com")!)
                 }
             }
-            .navigationTitle("Profil")
+            .navigationTitle(str.profileTitle)
         }
     }
 
@@ -50,7 +51,7 @@ struct ProfileView: View {
                             .font(.system(size: 32))
                             .opacity(readingStore.currentStreak > 0 ? 1 : 0.3)
                     }
-                    Text(readingStore.currentStreak == 1 ? "günlük seri" : "günlük seri")
+                    Text(str.streakLabel)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }

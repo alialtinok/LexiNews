@@ -1,14 +1,16 @@
 import SwiftUI
 
 struct MainTabView: View {
+    @Environment(\.str) private var str
+
     var body: some View {
         TabView {
             HomeView()
-                .tabItem { Label("Haberler", systemImage: "newspaper") }
+                .tabItem { Label(str.tabNews,    systemImage: "newspaper") }
             VocabularyView()
-                .tabItem { Label("Kelimelerim", systemImage: "books.vertical") }
+                .tabItem { Label(str.tabMyWords, systemImage: "books.vertical") }
             ProfileView()
-                .tabItem { Label("Profil", systemImage: "person") }
+                .tabItem { Label(str.tabProfile, systemImage: "person") }
         }
     }
 }
