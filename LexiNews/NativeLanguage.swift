@@ -12,6 +12,8 @@ struct NativeLanguage: Identifiable, Codable, Hashable {
     // MARK: Supported languages
     static let all: [NativeLanguage] = [
         NativeLanguage(id: "tr", name: "Türkçe",    nameInEnglish: "Turkish", flag: "🇹🇷", translationCode: "tr"),
+        NativeLanguage(id: "fr", name: "Français",  nameInEnglish: "French",  flag: "🇫🇷", translationCode: "fr"),
+        NativeLanguage(id: "ru", name: "Русский",   nameInEnglish: "Russian", flag: "🇷🇺", translationCode: "ru"),
         NativeLanguage(id: "de", name: "Deutsch",   nameInEnglish: "German",  flag: "🇩🇪", translationCode: "de"),
         NativeLanguage(id: "ar", name: "العربية",   nameInEnglish: "Arabic",  flag: "🇸🇦", translationCode: "ar"),
         NativeLanguage(id: "es", name: "Español",   nameInEnglish: "Spanish", flag: "🇪🇸", translationCode: "es"),
