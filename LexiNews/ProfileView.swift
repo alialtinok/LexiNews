@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ProfileView: View {
     @EnvironmentObject private var articleStore:    ArticleStore
+    @EnvironmentObject private var settings:        UserSettingsStore
     @EnvironmentObject private var vocabularyStore: VocabularyStore
     @EnvironmentObject private var readingStore:    ReadingStore
 
@@ -10,8 +11,15 @@ struct ProfileView: View {
             List {
                 streakSection
                 Section("Seviye") {
-                    Picker("Varsayılan Seviye", selection: $articleStore.selectedLevel) {
+                    Picker("Varsayılan Seviye", selection: $settings.selectedLevel) {
                         ForEach(CEFRLevel.allCases, id: \.self) { Text($0.label).tag($0) }
+                    }
+                }
+                Section("Dil") {
+                    Picker("Ana Dil", selection: $settings.nativeLanguage) {
+                        ForEach(NativeLanguage.all) { lang in
+                            Text("\(lang.flag) \(lang.name)").tag(lang)
+                        }
                     }
                 }
                 Section("İstatistikler") {

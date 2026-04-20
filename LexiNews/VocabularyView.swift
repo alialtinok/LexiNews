@@ -1,7 +1,8 @@
 import SwiftUI
 
 struct VocabularyView: View {
-    @EnvironmentObject private var store: VocabularyStore
+    @EnvironmentObject private var store:    VocabularyStore
+    @EnvironmentObject private var settings: UserSettingsStore
     @State private var tappedWord: String? = nil
 
     var body: some View {
@@ -28,7 +29,9 @@ struct VocabularyView: View {
             .navigationTitle("Kelimelerim")
         }
         .sheet(item: $tappedWord) { word in
-            WordPopupSheet(word: word).environmentObject(store)
+            WordPopupSheet(word: word)
+                .environmentObject(store)
+                .environmentObject(settings)
         }
     }
 }

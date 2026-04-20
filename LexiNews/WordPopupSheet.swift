@@ -3,6 +3,7 @@ import SwiftUI
 struct WordPopupSheet: View {
     let word: String
     @EnvironmentObject private var vocabularyStore: VocabularyStore
+    @EnvironmentObject private var settings:        UserSettingsStore
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -10,7 +11,7 @@ struct WordPopupSheet: View {
             VStack(spacing: 24) {
                 Text(word).font(.system(size: 36, weight: .bold)).padding(.top, 8)
                 Divider()
-                TranslationView(word: word)
+                TranslationView(word: word, targetLanguageCode: settings.nativeLanguage.translationCode)
                 Spacer()
                 Button {
                     if vocabularyStore.isSaved(word) { vocabularyStore.remove(word) }
@@ -38,6 +39,7 @@ struct WordPopupSheet: View {
 
 private struct TranslationView: View {
     let word: String
+    let targetLanguageCode: String          // e.g. "tr", "de", "ar"
     @State private var translation: String? = nil
     @State private var isLoading = true
 
@@ -50,7 +52,7 @@ private struct TranslationView: View {
                     .font(.title2.weight(.medium))
                     .multilineTextAlignment(.center)
             } else {
-                Text("Çeviri bulunamadı")
+                Text("Translation not found")
                     .foregroundStyle(.secondary)
             }
         }
@@ -59,7 +61,7 @@ private struct TranslationView: View {
 
     private func fetchTranslation() async {
         guard let encoded = word.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-              let url = URL(string: "https://api.mymemory.translated.net/get?q=\(encoded)&langpair=en|tr")
+              let url = URL(string: "https://api.mymemory.translated.net/get?q=\(encoded)&langpair=en|\(targetLanguageCode)")
         else { isLoading = false; return }
 
         do {

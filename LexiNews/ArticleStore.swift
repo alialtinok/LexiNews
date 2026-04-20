@@ -4,10 +4,9 @@ import Combine
 @MainActor
 final class ArticleStore: ObservableObject {
 
-    @Published var articles:      [Article] = []
-    @Published var selectedLevel: CEFRLevel = .B1
-    @Published var isLoading:     Bool      = false
-    @Published var errorMessage:  String?   = nil
+    @Published var articles:     [Article] = []
+    @Published var isLoading:    Bool      = false
+    @Published var errorMessage: String?   = nil
 
     var categories: [String] {
         Array(Set(articles.map { $0.category })).sorted()

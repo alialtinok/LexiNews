@@ -1,7 +1,8 @@
 import SwiftUI
 
 struct HomeView: View {
-    @EnvironmentObject private var store: ArticleStore
+    @EnvironmentObject private var store:    ArticleStore
+    @EnvironmentObject private var settings: UserSettingsStore
     @State private var selectedCategory: String? = nil
 
     private var displayedArticles: [Article] {
@@ -33,7 +34,7 @@ struct HomeView: View {
             LazyVStack(spacing: 12) {
                 ForEach(displayedArticles) { article in
                     NavigationLink(value: article) {
-                        ArticleCard(article: article, level: store.selectedLevel)
+                        ArticleCard(article: article, level: settings.selectedLevel)
                     }
                     .buttonStyle(.plain)
                 }
@@ -73,7 +74,7 @@ struct HomeView: View {
 
     private var levelPicker: some ToolbarContent {
         ToolbarItem(placement: .topBarTrailing) {
-            Picker("Seviye", selection: $store.selectedLevel) {
+            Picker("Seviye", selection: $settings.selectedLevel) {
                 ForEach(CEFRLevel.allCases, id: \.self) { Text($0.label).tag($0) }
             }
             .pickerStyle(.menu)

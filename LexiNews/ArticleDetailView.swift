@@ -3,13 +3,14 @@ import SwiftUI
 struct ArticleDetailView: View {
     let article: Article
     @EnvironmentObject private var articleStore:    ArticleStore
+    @EnvironmentObject private var settings:        UserSettingsStore
     @EnvironmentObject private var vocabularyStore: VocabularyStore
     @EnvironmentObject private var readingStore:    ReadingStore
     @EnvironmentObject private var speechService:   SpeechService
     @State private var localLevel: CEFRLevel? = nil
     @State private var tappedWord: String?    = nil
 
-    private var activeLevel: CEFRLevel { localLevel ?? articleStore.selectedLevel }
+    private var activeLevel: CEFRLevel { localLevel ?? settings.selectedLevel }
     private var version: ArticleVersion? { article.version(for: activeLevel) }
 
     var body: some View {
@@ -45,7 +46,9 @@ struct ArticleDetailView: View {
         .onAppear { readingStore.markRead(articleID: article.id) }
         .onDisappear { speechService.stop() }
         .sheet(item: $tappedWord) { word in
-            WordPopupSheet(word: word).environmentObject(vocabularyStore)
+            WordPopupSheet(word: word)
+                .environmentObject(vocabularyStore)
+                .environmentObject(settings)
         }
     }
 
