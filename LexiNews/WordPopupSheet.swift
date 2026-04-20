@@ -17,8 +17,9 @@ struct WordPopupSheet: View {
                                 missingLabel: str.translationMissing)
                 Spacer()
                 Button {
-                    if vocabularyStore.isSaved(word) { vocabularyStore.remove(word) }
-                    else { vocabularyStore.save(word) }
+                    let langID = settings.nativeLanguage.id
+                    if vocabularyStore.isSaved(word) { vocabularyStore.remove(word, languageID: langID) }
+                    else { vocabularyStore.save(word, languageID: langID) }
                 } label: {
                     Label(
                         vocabularyStore.isSaved(word) ? str.removeWord : str.saveWord,
